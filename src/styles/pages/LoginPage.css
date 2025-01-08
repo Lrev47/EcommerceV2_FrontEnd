@@ -1,0 +1,122 @@
+/* LoginPage.css */
+
+/* Container for the login page */
+.login-page-container {
+  max-width: 400px; /* Constrain the form width */
+  margin: 4rem auto; /* Center on the page with space above */
+  padding: 2rem 1.5rem;
+  background-color: #fff; /* White background */
+  border: 1px solid #e0e0e0; /* Subtle border */
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  font-family: var(--font-family); /* Use global font if defined */
+}
+
+/* Page heading (Login) */
+.login-page-container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--secondary-color); /* Adjust or use a direct color code */
+}
+
+/* Login form container */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Error message container */
+.login-error {
+  background-color: #fdecea;
+  color: #c00;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Form group styling */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.form-input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+/* Login button */
+.login-button {
+  background-color: var(--primary-color);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #0052c9; /* Slightly darker shade or any other hover color */
+}
+
+/* Disabled state for loading */
+.login-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Register redirect section */
+.register-redirect {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.register-redirect p {
+  margin-bottom: 0.5rem;
+  color: #555; /* Adjust text color if desired */
+}
+
+/* Register link styled as a button or simple link */
+.register-link {
+  background-color: #fff;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.register-link:hover {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+/* Responsive adjustments (example) */
+@media (max-width: 480px) {
+  .login-page-container {
+    margin: 2rem auto;
+    padding: 1.5rem 1rem;
+  }
+
+  .login-page-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .login-button {
+    font-size: 0.95rem;
+  }
+}
