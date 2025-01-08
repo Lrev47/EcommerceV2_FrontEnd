@@ -52,10 +52,16 @@ const CartPage = () => {
       <div className="cart-items">
         {items.map((item) => (
           <div key={item.productId} className="cart-item">
+            {/* New: Product image container */}
+            <div className="item-image">
+              <img src={item.imageUrl} alt={item.name} />
+            </div>
+
             <div className="item-info">
               <p className="item-name">{item.name}</p>
               <p className="item-price">Price: ${item.price?.toFixed(2)}</p>
             </div>
+
             <div className="item-quantity">
               <label>Qty:</label>
               <input
@@ -67,6 +73,7 @@ const CartPage = () => {
                 }
               />
             </div>
+
             <div className="item-remove">
               <button onClick={() => handleRemoveItem(item.productId)}>
                 Remove
