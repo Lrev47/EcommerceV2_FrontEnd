@@ -1,0 +1,98 @@
+/* UserOrdersPage.css */
+
+/* Container for the entire orders page */
+.user-orders-page {
+  max-width: 800px; /* Constrain the width */
+  margin: 2rem auto; /* Center on the page */
+  padding: 0 1rem;
+  font-family: var(--font-family); /* Use global font var if you have one */
+}
+
+/* Page heading */
+.user-orders-page h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--secondary-color); /* Or a direct color like #333 */
+}
+
+/* Orders list container (ul) */
+.orders-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Individual order item (li) */
+.order-item {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 1rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.order-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Header section of the order (ID, status, date) */
+.order-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+}
+
+.order-header p {
+  margin: 0;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Body section (total, items) */
+.order-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Total */
+.order-body p {
+  margin: 0;
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+/* Items section */
+.order-items {
+  background-color: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 0.75rem;
+}
+
+.order-items h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.order-items ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.order-items li {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* Loading/Error/Empty states can be styled separately */
