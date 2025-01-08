@@ -1,0 +1,25 @@
+/* base.css */
+
+/* Example CSS Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Example Variables (CSS Custom Properties) */
+:root {
+  --primary-color: #1a73e8; /* Example brand color */
+  --secondary-color: #333;
+  --font-family: "Arial", sans-serif;
+}
+
+/* Global Body Styles */
+body {
+  font-family: var(--font-family);
+  color: var(--secondary-color);
+  background-color: #fff;
+  line-height: 1.5;
+  padding: 0;
+  margin: 0;
+}
