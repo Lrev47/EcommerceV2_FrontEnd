@@ -1,108 +1,111 @@
 // src/pages/PaymentPage.jsx
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { createPayment, confirmPayment } from "../redux/slices/paymentSlice";
-// ^ Example thunks you'd have in paymentSlice
-import { clearCart } from "../redux/slices/cartSlice";
-// or your own logic to handle cart clearing
+import React, { useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import {
+  Elements,
+  CardElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
 
-const PaymentPage = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+// Use your publishable key from .env (which might be injected at build time)
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
-  const { userInfo } = useSelector((state) => state.user);
-  const { paymentIntentClientSecret, paymentId, loading, error, status } =
-    useSelector((state) => state.payment);
+function PaymentPage() {
+  return (
+    <Elements stripe={stripePromise}>
+      <CheckoutForm />
+    </Elements>
+  );
+}
 
-  // For a simple card input simulation
-  const [cardNumber, setCardNumber] = useState("");
-  const [cardCvc, setCardCvc] = useState("");
-  const [cardExpiry, setCardExpiry] = useState("");
+function CheckoutForm() {
+  const stripe = useStripe();
+  const elements = useElements();
 
-  useEffect(() => {
-    if (!userInfo) {
-      // If user not logged in, redirect to login
-      navigate("/login");
+  const [amount, setAmount] = useState(500); // example: $5 in cents
+  const [clientSecret, setClientSecret] = useState(null);
+  const [paymentStatus, setPaymentStatus] = useState("");
+
+  // Step 1: call your backend to create a Payment Intent
+  const createPaymentIntent = async () => {
+    try {
+      // POST to your node route: /api/stripe/create-payment-intent
+      // The backend code you provided is: stripeController.createPaymentIntent
+      const response = await fetch("/api/stripe/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount }), // pass the amount in cents
+      });
+      const data = await response.json();
+      setClientSecret(data.clientSecret);
+      setPaymentStatus("");
+    } catch (err) {
+      console.error(err);
     }
-  }, [userInfo, navigate]);
+  };
 
-  // Hypothetical function to create a payment intent or payment record
-  const handleCreatePayment = () => {
-    // E.g., your backend might need order ID, user ID, total amount, etc.
-    dispatch(
-      createPayment({
-        orderId: 123, // or from Redux order state
-        userId: userInfo?.id,
-        amount: 49.99, // example
-        // any other required fields
-      })
+  // Step 2: Confirm the card payment with Stripe
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!stripe || !elements || !clientSecret) return;
+
+    // Grab card details from <CardElement />
+    const cardElement = elements.getElement(CardElement);
+    if (!cardElement) return;
+
+    // Confirm the payment
+    setPaymentStatus("Processing payment...");
+
+    const { paymentIntent, error } = await stripe.confirmCardPayment(
+      clientSecret,
+      {
+        payment_method: {
+          card: cardElement,
+        },
+      }
     );
-  };
 
-  // Hypothetical confirm function (Stripe-like flow)
-  const handleConfirmPayment = async () => {
-    if (!paymentId) return;
-    // Typically you'd pass the paymentMethodId from Stripe elements, etc.
-    dispatch(confirmPayment({ paymentId, paymentMethodId: "pm_fakeCard123" }));
-  };
-
-  // If payment succeeded, you might redirect or show success
-  useEffect(() => {
-    if (status === "SUCCEEDED") {
-      // Clear cart if you want
-      dispatch(clearCart());
-      // Navigate to success page with or without order details
-      navigate("/order-success");
+    if (error) {
+      console.error("Payment error:", error.message);
+      setPaymentStatus(`Payment failed: ${error.message}`);
+      return;
     }
-  }, [status, navigate, dispatch]);
+
+    if (paymentIntent && paymentIntent.status === "succeeded") {
+      setPaymentStatus("Payment succeeded!");
+      // Possibly redirect or show a success page
+    } else {
+      setPaymentStatus(`Payment status: ${paymentIntent?.status}`);
+    }
+  };
 
   return (
-    <div className="payment-page-container">
-      <h2>Payment</h2>
-      {error && <div className="payment-error">Error: {error}</div>}
-
-      <div className="payment-info">
-        <label>Card Number</label>
+    <div style={{ maxWidth: "400px", margin: "0 auto" }}>
+      <h2>Test Stripe Payment</h2>
+      <label>
+        Amount (cents):
         <input
-          type="text"
-          placeholder="4242 4242 4242 4242"
-          value={cardNumber}
-          onChange={(e) => setCardNumber(e.target.value)}
+          type="number"
+          value={amount}
+          onChange={(e) => setAmount(Number(e.target.value))}
         />
-
-        <label>Expiry Date</label>
-        <input
-          type="text"
-          placeholder="12/34"
-          value={cardExpiry}
-          onChange={(e) => setCardExpiry(e.target.value)}
-        />
-
-        <label>CVC</label>
-        <input
-          type="text"
-          placeholder="123"
-          value={cardCvc}
-          onChange={(e) => setCardCvc(e.target.value)}
-        />
-      </div>
-
-      <div className="payment-actions">
-        <button onClick={handleCreatePayment} disabled={loading || !userInfo}>
-          {loading ? "Creating Payment..." : "Create Payment Intent"}
-        </button>
-
-        {/* If your flow requires a confirm step */}
-        <button
-          onClick={handleConfirmPayment}
-          disabled={loading || !paymentIntentClientSecret}
-        >
-          {loading ? "Confirming Payment..." : "Confirm Payment"}
-        </button>
-      </div>
+      </label>
+      <button onClick={createPaymentIntent}>Create Payment Intent</button>
+      {clientSecret && (
+        <>
+          <p style={{ color: "green" }}>Client Secret: {clientSecret}</p>
+          <form onSubmit={handleSubmit}>
+            <CardElement />
+            <button type="submit" disabled={!stripe}>
+              Pay
+            </button>
+          </form>
+        </>
+      )}
+      {paymentStatus && <p>{paymentStatus}</p>}
     </div>
   );
-};
+}
 
 export default PaymentPage;
