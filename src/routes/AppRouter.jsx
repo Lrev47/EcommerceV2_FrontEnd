@@ -22,6 +22,10 @@ const AppRouter = () => {
       {/* Public Routes */}
       <Route path="/" element={<HomePage />} />
       <Route path="/products" element={<ProductListingPage />} />
+      <Route
+        path="/products/category/:category"
+        element={<ProductListingPage />}
+      />
       <Route path="/products/:id" element={<ProductDetailPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
