@@ -1,8 +1,18 @@
 // src/pages/HomePage.jsx
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllProducts } from "../redux/slices/productSlice";
 import { Link } from "react-router-dom";
+
+/** Utility to shuffle an array using Fisher-Yates (Durstenfeld) shuffle **/
+function shuffle(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -16,9 +26,12 @@ const HomePage = () => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
+  // Shuffle products whenever 'products' changes
+  const shuffledProducts = useMemo(() => shuffle(products), [products]);
+
   // Featured & Best Sellers, etc.
-  const featuredProducts = products.slice(0, 4);
-  const bestSellerProducts = products.slice(4, 8);
+  const featuredProducts = shuffledProducts.slice(0, 4);
+  const bestSellerProducts = shuffledProducts.slice(4, 8);
 
   if (loading) return <div className="home-loading">Loading...</div>;
   if (error) return <div className="home-error">Error: {error}</div>;
@@ -45,13 +58,33 @@ const HomePage = () => {
         <div className="categories-grid">
           {/* Hardcode or dynamically map major categories */}
           <Link to="/products/category/Electronics" className="category-card">
-            <img src="public/product_208_1736188228747.png" alt="Electronics" />
+            <img src="/Electronics.png" alt="Electronics" />
             <h3>Electronics</h3>
           </Link>
-          <Link to="/products/category/Books" className="category-card">
-            <img src="public/product_144_1736187098114.png" alt="Books" />
-            <h3>Books</h3>
+          <Link to="/products/category/Fitness" className="category-card">
+            <img src="/Fitness.png" alt="Books" />
+            <h3>Fitness</h3>
           </Link>
+          <Link to="/products/category/Bed and Bath" className="category-card">
+            <img src="/Bed and Bath.png" alt="Electronics" />
+            <h3>Bed and Bath</h3>
+          </Link>
+          <Link to="/products/category/Home & Office" className="category-card">
+            <img src="/Home and Office.png" alt="Electronics" />
+            <h3>Home & Office</h3>
+          </Link>
+          <Link
+            to="/products/category/Health & Wellness"
+            className="category-card"
+          >
+            <img src="/Health and Wellness.png" alt="Electronics" />
+            <h3>Health & Wellness</h3>
+          </Link>
+          <Link to="/products/category/Apparel" className="category-card">
+            <img src="/Apparel.png" alt="Electronics" />
+            <h3>Apparel</h3>
+          </Link>
+
           {/* ... etc */}
         </div>
       </section>
@@ -105,7 +138,11 @@ const HomePage = () => {
           </div>
           <div className="testimonial-card">
             <p>"Great prices and amazing customer service!"</p>
-            <h4>- Mark S.</h4>
+            <h4>- Austin S.</h4>
+          </div>
+          <div className="testimonial-card">
+            <p>"Great selction, I signed up for the deals!"</p>
+            <h4>- Maria R.</h4>
           </div>
         </div>
       </section>
