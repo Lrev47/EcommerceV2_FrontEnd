@@ -1,4 +1,4 @@
-// src/pages/LoginPage.jsx
+// LoginPage.jsx
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/slices/userSlice";
@@ -8,23 +8,20 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Redux state: user and loading/error
   const { userInfo, loading, error } = useSelector((state) => state.user);
 
-  // Local form state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // If the user is already logged in, navigate away (e.g., to home)
   useEffect(() => {
     if (userInfo) {
       navigate("/");
     }
   }, [userInfo, navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Dispatch login thunk
+    // We can also do a try/catch if we want to handle more things locally
     dispatch(loginUser({ email, password }));
   };
 
@@ -33,7 +30,8 @@ const LoginPage = () => {
       <h2>Login</h2>
 
       <form onSubmit={handleSubmit} className="login-form">
-        {error && <div className="login-error">Error: {error}</div>}
+        {/* If there's an error, display it in a friendly manner */}
+        {error && <div className="login-error">{error}</div>}
 
         <div className="form-group">
           <label htmlFor="email">Email Address</label>
