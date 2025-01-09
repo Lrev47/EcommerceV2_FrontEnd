@@ -1,5 +1,4 @@
 // src/pages/ProductDetailsPage.jsx
-
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,9 +8,7 @@ import {
   fetchReviewsByProduct,
   createReview,
 } from "../redux/slices/reviewSlice";
-
-// If your site uses color variables, they come from a global CSS or base.css
-// e.g. :root { --primary-color: #1a73e8; --secondary-color: #333; }
+import StarRating from "../components/common/starRating"; // <== import the star rating component
 
 const ProductDetailsPage = () => {
   const { id } = useParams();
@@ -32,7 +29,7 @@ const ProductDetailsPage = () => {
   // Logged-in user info (for leaving reviews)
   const { userInfo } = useSelector((state) => state.user);
 
-  // Quantity for "Add to Cart"
+  // State for "Add to Cart" quantity
   const [quantity, setQuantity] = useState(1);
 
   // State for creating a new review
@@ -54,7 +51,7 @@ const ProductDetailsPage = () => {
         name: singleProduct.name,
         price: singleProduct.price,
         quantity,
-        imageUrl: singleProduct.imageUrl, // <--- pass it!
+        imageUrl: singleProduct.imageUrl,
       })
     );
   };
@@ -67,7 +64,7 @@ const ProductDetailsPage = () => {
       return;
     }
     const reviewData = {
-      userId: userInfo.id, // or however your backend identifies the user
+      userId: userInfo.id,
       productId: singleProduct.id,
       starRating,
       comment,
@@ -81,7 +78,7 @@ const ProductDetailsPage = () => {
     );
   };
 
-  // Loading states
+  // Loading/error states for product
   if (loading) return <div>Loading product details...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!singleProduct) return <div>Product not found.</div>;
@@ -114,8 +111,11 @@ const ProductDetailsPage = () => {
         <div className="product-detail-info">
           <h2>{name}</h2>
           <p className="price">${price?.toFixed(2)}</p>
-          {rating && <p>Rating: {rating} / 5</p>}
-          <p>{description}</p>
+
+          {/* Render star rating if present */}
+          {rating ? <StarRating rating={rating} /> : <p>No rating yet</p>}
+
+          <p className="product-description">{description}</p>
           <p>In Stock: {inStock ? "Yes" : "No"}</p>
           {inStock && <p>Available Quantity: {stockQuantity}</p>}
 
@@ -142,19 +142,15 @@ const ProductDetailsPage = () => {
         <Link to="/products">Back to Products</Link>
       </div>
 
-      {/* ========== REVIEWS SECTION (Below the product details) ========== */}
+      {/* ========== REVIEWS SECTION ========== */}
       <section className="reviews-section">
         <h3>Product Reviews</h3>
-
-        {/* Render possible loading/error states for reviews */}
         {reviewLoading && <p>Loading reviews...</p>}
         {reviewError && <p>Error loading reviews: {reviewError}</p>}
 
-        {/* List of reviews */}
         {reviews && reviews.length > 0 ? (
           <ul className="review-list">
             {reviews.map((rev) => {
-              // If your backend includes user object, e.g. rev.user.username
               const user = rev.user;
               const username = user?.username || `User#${rev.userId}`;
               const userImage = user?.userImageUrl || "/default-profile.png";
@@ -169,9 +165,8 @@ const ProductDetailsPage = () => {
                     />
                     <div>
                       <p className="review-username">{username}</p>
-                      <p className="review-rating">
-                        Rating: {rev.starRating} / 5
-                      </p>
+                      {/* Display star rating for each review */}
+                      <StarRating rating={rev.starRating} />
                     </div>
                   </div>
                   <div className="review-comment">
@@ -185,7 +180,7 @@ const ProductDetailsPage = () => {
           <p>No reviews yet.</p>
         )}
 
-        {/* If user is logged in, show a form to add a new review */}
+        {/* If user is logged in, show the "leave a review" form */}
         {userInfo ? (
           <div className="review-form-wrapper">
             <h4>Leave a Review</h4>
