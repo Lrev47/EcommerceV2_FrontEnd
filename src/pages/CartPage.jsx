@@ -52,7 +52,7 @@ const CartPage = () => {
       <div className="cart-items">
         {items.map((item) => (
           <div key={item.productId} className="cart-item">
-            {/* New: Product image container */}
+            {/* Product image container */}
             <div className="item-image">
               <img src={item.imageUrl} alt={item.name} />
             </div>
