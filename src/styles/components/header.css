@@ -71,13 +71,16 @@ header {
   color: var(--primary-color);
 }
 
-/* Cart Link */
+/* =========================
+   CART LINK
+========================= */
 .cart-link {
   border: 1px solid var(--primary-color);
   border-radius: 4px;
   color: var(--primary-color);
   font-weight: 600;
   transition: all 0.2s ease-in-out;
+  padding: 0.4rem 0.75rem; /* Slightly narrower padding */
 }
 
 .cart-link:hover {
@@ -85,7 +88,9 @@ header {
   color: #fff !important;
 }
 
-/* Profile image */
+/* =========================
+   PROFILE IMAGE / LINK
+========================= */
 .profile-link {
   display: inline-block;
 }
@@ -96,9 +101,12 @@ header {
   height: 40px;
   object-fit: cover;
   vertical-align: middle;
+  border: 1px solid #ccc; /* optional if you want a border */
 }
 
-/* Dropdown container */
+/* =========================
+   DROPDOWN (PRODUCTS)
+========================= */
 .dropdown-content {
   display: none;
   max-height: 300px;
@@ -130,8 +138,63 @@ header {
   color: var(--primary-color);
 }
 
-/* Show the dropdown on hover */
+/* Show the products dropdown on hover */
 .dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* =========================
+   PROFILE DROPDOWN
+========================= */
+.profile-dropdown {
+  position: relative;
+  cursor: pointer;
+}
+
+.profile-dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%; /* below the icon */
+  right: 0; /* align to the right edge if you want */
+  min-width: 140px;
+  background-color: #fff;
+  border: 1px solid var(--header-border-color);
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  padding: 0.25rem 0;
+}
+
+/* Each item in the profile dropdown */
+.profile-dropdown-content a,
+.profile-dropdown-content button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  color: var(--header-text-color);
+  text-decoration: none;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+/* Remove border from last item */
+.profile-dropdown-content a:last-child,
+.profile-dropdown-content button:last-child {
+  border-bottom: none;
+}
+
+.profile-dropdown-content a:hover,
+.profile-dropdown-content button:hover {
+  background-color: var(--header-bg-color);
+  color: var(--primary-color);
+}
+
+/* Show the profile dropdown on hover */
+.profile-dropdown:hover .profile-dropdown-content {
   display: block;
 }
 
