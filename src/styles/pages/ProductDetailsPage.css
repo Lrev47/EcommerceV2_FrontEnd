@@ -1,8 +1,6 @@
 /* ProductDetailsPage.css */
 
 /* ====== TOP SECTION: PRODUCT DETAILS ====== */
-
-/* Container holding product image & info side by side */
 .product-detail-container {
   display: flex;
   align-items: flex-start;
@@ -13,7 +11,6 @@
   font-family: var(--font-family);
 }
 
-/* Image container */
 .product-detail-image {
   flex: 0 0 300px; /* Reserve space for the image */
   text-align: center;
@@ -27,7 +24,6 @@
   border: 1px solid #ddd;
 }
 
-/* Info container */
 .product-detail-info {
   flex: 1;
   display: flex;
@@ -47,7 +43,7 @@
   color: var(--primary-color);
 }
 
-.product-detail-info p {
+.product-description {
   margin: 0.25rem 0;
   line-height: 1.4;
   color: #333;
@@ -85,12 +81,12 @@
   background-color: #0052c9;
 }
 
-/* Back to Products link container (optional) */
+/* Link to go back */
 .back-to-products {
   max-width: 1200px;
   margin: 1rem auto;
   padding: 0 1rem;
-  text-align: left; /* or right/center, your choice */
+  text-align: left;
 }
 
 .back-to-products a {
@@ -103,8 +99,35 @@
   text-decoration: underline;
 }
 
-/* ====== REVIEWS SECTION (Below the product) ====== */
+/* ====== STAR RATING (for product & reviews) ====== */
+.star-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.25rem; /* small spacing below name/price */
+}
 
+.star {
+  font-size: 1.2rem;
+  line-height: 1.2;
+  user-select: none; /* prevent text highlight */
+}
+
+.star.full {
+  color: #ffd700; /* gold */
+}
+
+.star.empty {
+  color: #ccc; /* light gray */
+}
+
+.rating-number {
+  margin-left: 0.5rem;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* ====== REVIEWS SECTION (Below the product) ====== */
 .reviews-section {
   max-width: 1200px;
   margin: 2rem auto;
@@ -118,7 +141,6 @@
   color: var(--secondary-color);
 }
 
-/* The UL for reviews */
 .review-list {
   list-style: none;
   margin: 0;
@@ -136,7 +158,6 @@
   gap: 0.5rem;
 }
 
-/* The user's avatar + name + rating row */
 .review-user {
   display: flex;
   align-items: center;
@@ -157,13 +178,7 @@
   color: var(--secondary-color);
 }
 
-.review-rating {
-  margin: 0.25rem 0 0 0;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-/* The actual comment text */
+/* We'll reuse .star-rating for each review's star rating */
 .review-comment p {
   margin: 0;
   line-height: 1.4;
