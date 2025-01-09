@@ -1,20 +1,19 @@
 // src/redux/slices/userSlice.js
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   loginUser as loginUserService,
   registerUser as registerUserService,
   updateUser as updateUserService,
-  getAllUsers as getAllUsersService, // <-- import from userService if you have a getAllUsers function
+  getAllUsers as getAllUsersService,
 } from "../../services/userService";
+import api from "../../services/api"; // Your axios instance for setting headers, etc.
 
-/**
- * Thunk: loginUser
- */
+// ========== loginUser Thunk ==========
 export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (credentials, { rejectWithValue }) => {
     try {
+      // Suppose the response is { token, user: {...} }
       const data = await loginUserService(credentials);
       return data;
     } catch (err) {
@@ -23,9 +22,7 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-/**
- * Thunk: registerUser
- */
+// ========== registerUser Thunk ==========
 export const registerUser = createAsyncThunk(
   "user/registerUser",
   async (userData, { rejectWithValue }) => {
@@ -38,9 +35,7 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-/**
- * Thunk: updateUser
- */
+// ========== updateUser Thunk ==========
 export const updateUser = createAsyncThunk(
   "user/updateUser",
   async ({ id, ...updateData }, { rejectWithValue }) => {
@@ -53,16 +48,13 @@ export const updateUser = createAsyncThunk(
   }
 );
 
-/**
- * Thunk: fetchAllUsers
- * Grabs all users from the backend (e.g., GET /users).
- */
+// ========== fetchAllUsers Thunk ==========
 export const fetchAllUsers = createAsyncThunk(
   "user/fetchAllUsers",
   async (_, { rejectWithValue }) => {
     try {
       const data = await getAllUsersService();
-      return data; // likely an array of users
+      return data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -73,68 +65,98 @@ const userSlice = createSlice({
   name: "user",
   initialState: {
     userInfo: null,
-    allUsers: [], // store the list of all users here if you like
+    token: null,
+    allUsers: [],
     loading: false,
     error: null,
   },
   reducers: {
     logout(state) {
       state.userInfo = null;
+      state.token = null;
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    },
+    /**
+     * setUserFromStorage: used when rehydrating user from localStorage
+     */
+    setUserFromStorage(state, action) {
+      const { token, user } = action.payload;
+      state.token = token;
+      state.userInfo = user;
     },
   },
   extraReducers: (builder) => {
     builder
-      // ========== loginUser ==========
+      // ===== loginUser =====
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.userInfo = action.payload.user;
+        // Expecting action.payload => { token, user }
+        const { token, user } = action.payload;
+        state.token = token;
+        state.userInfo = user;
+
+        // Store in localStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        // Optionally set default Auth header so subsequent requests are authenticated
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // ========== registerUser ==========
+      // ===== registerUser =====
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.userInfo = action.payload.user;
+        // Suppose register also returns { token, user }, or at least a user
+        const { token, user } = action.payload;
+        state.token = token || null;
+        state.userInfo = user;
+
+        if (token) {
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(user));
+          api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        }
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // ========== updateUser ==========
+      // ===== updateUser =====
       .addCase(updateUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.userInfo = action.payload.user; // e.g. updated user
+        state.userInfo = action.payload.user;
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // ========== fetchAllUsers ==========
+      // ===== fetchAllUsers =====
       .addCase(fetchAllUsers.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchAllUsers.fulfilled, (state, action) => {
         state.loading = false;
-        // store the entire array of users
-        state.allUsers = action.payload;
+        state.allUsers = action.payload; // array of users
       })
       .addCase(fetchAllUsers.rejected, (state, action) => {
         state.loading = false;
@@ -143,5 +165,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { logout } = userSlice.actions;
+export const { logout, setUserFromStorage } = userSlice.actions;
 export default userSlice.reducer;
