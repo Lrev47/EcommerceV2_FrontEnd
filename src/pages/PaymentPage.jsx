@@ -1,110 +1,136 @@
 // src/pages/PaymentPage.jsx
-import React, { useState } from "react";
+
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux"; // 1) import useDispatch
+import { useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
-  CardElement,
+  PaymentElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
+import { clearCart } from "../redux/slices/cartSlice"; // 2) import clearCart
 
-// Use your publishable key from .env (which might be injected at build time)
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 function PaymentPage() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch(); // 3) get dispatch
+  const { totalPrice } = useSelector((state) => state.cart);
+
+  const totalInCents = Math.round((totalPrice || 0) * 100);
+
+  const [clientSecret, setClientSecret] = useState("");
+  const [elementsOptions, setElementsOptions] = useState(null);
+
+  useEffect(() => {
+    if (!totalInCents) return;
+
+    const createPaymentIntent = async () => {
+      try {
+        const response = await fetch(
+          import.meta.env.VITE_API_URL + "/stripe/create-payment-intent",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ amount: totalInCents }),
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to create Payment Intent");
+        }
+        const data = await response.json();
+        if (!data.clientSecret) {
+          throw new Error("No clientSecret returned");
+        }
+
+        setClientSecret(data.clientSecret);
+        setElementsOptions({
+          clientSecret: data.clientSecret,
+          appearance: { theme: "stripe" },
+        });
+      } catch (err) {
+        console.error("Error creating PaymentIntent:", err);
+      }
+    };
+
+    createPaymentIntent();
+  }, [totalInCents]);
+
+  if (!clientSecret || !elementsOptions) {
+    return <div>Preparing payment... (total = ${totalPrice || 0})</div>;
+  }
+
   return (
-    <Elements stripe={stripePromise}>
-      <CheckoutForm />
-    </Elements>
+    <div className="payment-page-container">
+      <h2 className="payment-page-title">Stripe Payment</h2>
+      <Elements stripe={stripePromise} options={elementsOptions}>
+        <HardcodedCardForm
+          clientSecret={clientSecret}
+          onSuccess={() => {
+            // 4) On success, cart is cleared, then navigate
+            dispatch(clearCart()); // empty the cart
+            navigate("/order-success");
+          }}
+        />
+      </Elements>
+    </div>
   );
 }
 
-function CheckoutForm() {
+function HardcodedCardForm({ clientSecret, onSuccess }) {
   const stripe = useStripe();
   const elements = useElements();
+  const [statusMessage, setStatusMessage] = useState("");
 
-  const [amount, setAmount] = useState(500); // example: $5 in cents
-  const [clientSecret, setClientSecret] = useState(null);
-  const [paymentStatus, setPaymentStatus] = useState("");
-
-  // Step 1: call your backend to create a Payment Intent
-  const createPaymentIntent = async () => {
-    try {
-      // POST to your node route: /api/stripe/create-payment-intent
-      // The backend code you provided is: stripeController.createPaymentIntent
-      const response = await fetch("/api/stripe/create-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount }), // pass the amount in cents
-      });
-      const data = await response.json();
-      setClientSecret(data.clientSecret);
-      setPaymentStatus("");
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // Step 2: Confirm the card payment with Stripe
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!stripe || !elements || !clientSecret) return;
 
-    // Grab card details from <CardElement />
-    const cardElement = elements.getElement(CardElement);
-    if (!cardElement) return;
+    setStatusMessage("Processing payment with pm_card_visa...");
 
-    // Confirm the payment
-    setPaymentStatus("Processing payment...");
-
-    const { paymentIntent, error } = await stripe.confirmCardPayment(
+    // Use the built-in Stripe test PaymentMethod
+    const { error, paymentIntent } = await stripe.confirmCardPayment(
       clientSecret,
       {
-        payment_method: {
-          card: cardElement,
-        },
+        payment_method: "pm_card_visa", // test PaymentMethod
       }
     );
 
     if (error) {
       console.error("Payment error:", error.message);
-      setPaymentStatus(`Payment failed: ${error.message}`);
+      setStatusMessage(`Payment failed: ${error.message}`);
       return;
     }
 
-    if (paymentIntent && paymentIntent.status === "succeeded") {
-      setPaymentStatus("Payment succeeded!");
-      // Possibly redirect or show a success page
+    if (paymentIntent?.status === "succeeded") {
+      setStatusMessage("Payment succeeded!");
+      if (onSuccess) onSuccess(); // call the success callback
     } else {
-      setPaymentStatus(`Payment status: ${paymentIntent?.status}`);
+      setStatusMessage(`Payment status: ${paymentIntent?.status}`);
     }
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-      <h2>Test Stripe Payment</h2>
-      <label>
-        Amount (cents):
-        <input
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
-        />
-      </label>
-      <button onClick={createPaymentIntent}>Create Payment Intent</button>
-      {clientSecret && (
-        <>
-          <p style={{ color: "green" }}>Client Secret: {clientSecret}</p>
-          <form onSubmit={handleSubmit}>
-            <CardElement />
-            <button type="submit" disabled={!stripe}>
-              Pay
-            </button>
-          </form>
-        </>
+    <form className="payment-form" onSubmit={handleSubmit}>
+      <p style={{ fontStyle: "italic" }}>
+        This demo automatically uses Stripe’s <strong>pm_card_visa</strong> test
+        method, ignoring any typed input.
+      </p>
+
+      <div className="stripe-payment-element disabled-payment-element">
+        <PaymentElement />
+      </div>
+
+      <button className="payment-submit-button" disabled={!stripe}>
+        Pay Now (Test)
+      </button>
+
+      {statusMessage && (
+        <p className="payment-status-message">{statusMessage}</p>
       )}
-      {paymentStatus && <p>{paymentStatus}</p>}
-    </div>
+    </form>
   );
 }
 
