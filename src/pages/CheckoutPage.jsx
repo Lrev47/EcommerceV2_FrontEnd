@@ -43,18 +43,13 @@ const CheckoutPage = () => {
     e.preventDefault();
 
     // Build an order payload
-    // 1) If shippingAddressId is chosen, we can store that as shippingAddressId
-    // or if the user typed customShipping, we store that text
     const shippingAddress = addressList.find(
       (addr) => addr.id === Number(shippingAddressId)
     );
-
     const billingAddress = addressList.find(
       (addr) => addr.id === Number(billingAddressId)
     );
 
-    // We’ll send the entire address object or an ID to the backend,
-    // depending on how your backend expects it. For example:
     const orderData = {
       userId: userInfo?.id,
       shippingAddressId: shippingAddress?.id || null,
@@ -87,7 +82,6 @@ const CheckoutPage = () => {
       <form onSubmit={handlePlaceOrder} className="checkout-form">
         <div className="form-group">
           <label>Shipping Address</label>
-          {/* 1) Let user choose from existing addresses */}
           <select
             value={shippingAddressId}
             onChange={(e) => {
@@ -104,7 +98,7 @@ const CheckoutPage = () => {
             ))}
           </select>
 
-          {/* 2) Or type a custom shipping address */}
+          {/* Or type a custom shipping address */}
           <p style={{ margin: "0.5rem 0" }}>Or type a new one:</p>
           <input
             type="text"
@@ -112,7 +106,7 @@ const CheckoutPage = () => {
             value={customShipping}
             onChange={(e) => {
               setCustomShipping(e.target.value);
-              setShippingAddressId(""); // if user types custom, reset the select
+              setShippingAddressId(""); // if user types custom, reset select
             }}
           />
         </div>
