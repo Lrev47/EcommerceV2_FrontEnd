@@ -16,7 +16,10 @@
 @import url("./pages/PaymentPage.css");
 @import url("./pages/OrderSuccessPage.css");
 @import url("./pages/CheckoutPage.css");
-@import url("./pages/AdminDashboardPage.css"); /* 
+@import url("./pages/AdminDashboardPage.css");
+@import url("./pages/PaymentPage.css");
+
+/* 
    You can add more imports here, for example:
    @import url('./components/footer.css');
    @import url('./components/cards.css');
