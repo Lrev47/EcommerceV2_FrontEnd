@@ -1,4 +1,4 @@
-// LoginPage.jsx
+// src/pages/LoginPage.jsx
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/slices/userSlice";
@@ -10,8 +10,9 @@ const LoginPage = () => {
 
   const { userInfo, loading, error } = useSelector((state) => state.user);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // Set initial values to your "demo" credentials
+  const [email, setEmail] = useState("alice@example.com");
+  const [password, setPassword] = useState("password1");
 
   useEffect(() => {
     if (userInfo) {
@@ -21,7 +22,6 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // We can also do a try/catch if we want to handle more things locally
     dispatch(loginUser({ email, password }));
   };
 
@@ -30,7 +30,6 @@ const LoginPage = () => {
       <h2>Login</h2>
 
       <form onSubmit={handleSubmit} className="login-form">
-        {/* If there's an error, display it in a friendly manner */}
         {error && <div className="login-error">{error}</div>}
 
         <div className="form-group">
