@@ -13,9 +13,11 @@ const RegisterPage = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
-  const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // New state for the profile picture file
+  const [profileImageFile, setProfileImageFile] = useState(null);
 
   useEffect(() => {
     // If already logged in, redirect to home
@@ -26,17 +28,21 @@ const RegisterPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Dispatch register thunk
-    dispatch(
-      registerUser({
-        firstName,
-        lastName,
-        username,
-        gender,
-        email,
-        password,
-      })
-    );
+
+    // Use FormData to support file upload
+    const formData = new FormData();
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("username", username);
+    formData.append("email", email);
+    formData.append("password", password);
+
+    // Append the file only if user selected one
+    if (profileImageFile) {
+      formData.append("userImage", profileImageFile);
+    }
+
+    dispatch(registerUser(formData));
   };
 
   return (
@@ -85,21 +91,7 @@ const RegisterPage = () => {
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="gender">Gender</label>
-          <select
-            id="gender"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-            className="form-input"
-          >
-            <option value="">-- Select Gender --</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-            {/* Adjust as needed */}
-          </select>
-        </div>
+        {/* Gender field removed — no longer needed */}
 
         <div className="form-group">
           <label htmlFor="email">Email Address</label>
@@ -123,6 +115,18 @@ const RegisterPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            className="form-input"
+          />
+        </div>
+
+        {/* New file input for the user profile image */}
+        <div className="form-group">
+          <label htmlFor="userImage">Profile Picture (Optional)</label>
+          <input
+            type="file"
+            id="userImage"
+            accept="image/*"
+            onChange={(e) => setProfileImageFile(e.target.files[0])}
             className="form-input"
           />
         </div>

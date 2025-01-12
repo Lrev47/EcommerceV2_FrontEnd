@@ -23,10 +23,12 @@ export const loginUser = createAsyncThunk(
 );
 
 // ========== registerUser Thunk ==========
+// Accepts FormData now, but logic remains the same.
 export const registerUser = createAsyncThunk(
   "user/registerUser",
   async (userData, { rejectWithValue }) => {
     try {
+      // userData is now a FormData object.
       const data = await registerUserService(userData);
       return data;
     } catch (err) {

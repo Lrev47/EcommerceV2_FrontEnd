@@ -5,12 +5,15 @@ import api from "./api";
  * Register a new user
  * POST /users/register
  */
-export async function registerUser(userData) {
-  // userData might look like: { firstName, lastName, username, email, password, role, gender }
-  const response = await api.post("/users/register", userData);
+export async function registerUser(formData) {
+  // formData is a FormData object (including file if provided)
+  const response = await api.post("/users/register", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 }
-
 /**
  * Login user
  * POST /users/login

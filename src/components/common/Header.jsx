@@ -33,7 +33,7 @@ const Header = () => {
       <nav className="header-nav">
         {/* Example Logo or Brand */}
         <div className="logo">
-          <Link to="/">My Brand</Link>
+          <Link to="/">My Marketplace</Link>
         </div>
 
         <ul className="nav-links">
