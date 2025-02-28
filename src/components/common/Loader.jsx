@@ -6,12 +6,7 @@ const SomePage = () => {
   const [loading, setLoading] = React.useState(false);
 
   // Simulate an async operation
-  React.useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  }, []);
+  React.// useEffect removed
 
   return (
     <div>

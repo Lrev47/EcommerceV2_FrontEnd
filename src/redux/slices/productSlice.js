@@ -1,98 +1,93 @@
-// src/redux/slices/productSlice.js
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  getAllProducts,
-  getProductById,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-} from "../../services/productService";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { productApi } from '../../api';
 
-// 1) fetchAllProducts
-export const fetchAllProducts = createAsyncThunk(
-  "products/fetchAll",
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await getAllProducts();
-      return data; // e.g. an array of products
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
+// Async thunks
+export const fetchAllProducts = (arg) => async (dispatch) => {
+  console.log("fetchAllProducts called with:", arg);
+  dispatch(setLoading(true));
+  // Mock implementation here
+  dispatch(setLoading(false));
+};
 
-// 2) fetchProductById
-export const fetchProductById = createAsyncThunk(
-  "products/fetchById",
-  async (id, { rejectWithValue }) => {
-    try {
-      const data = await getProductById(id);
-      return data; // single product object
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
+export const fetchProductById = (arg) => async (dispatch) => {
+  console.log("fetchProductById called with:", arg);
+  dispatch(setLoading(true));
+  // Mock implementation here
+  dispatch(setLoading(false));
+};
 
-// 3) createNewProduct
-export const createNewProduct = createAsyncThunk(
-  "products/create",
-  async (productData, { rejectWithValue }) => {
-    try {
-      const data = await createProduct(productData);
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
+export const fetchProductsByCategory = (arg) => async (dispatch) => {
+  console.log("fetchProductsByCategory called with:", arg);
+  dispatch(setLoading(true));
+  // Mock implementation here
+  dispatch(setLoading(false));
+};
 
-// ... similarly for updateProduct, deleteProduct, etc.
+export const searchProducts = (arg) => async (dispatch) => {
+  console.log("searchProducts called with:", arg);
+  dispatch(setLoading(true));
+  // Mock implementation here
+  dispatch(setLoading(false));
+};
+
+export const createProduct = (arg) => async (dispatch) => {
+  console.log("createProduct called with:", arg);
+  dispatch(setLoading(true));
+  // Mock implementation here
+  dispatch(setLoading(false));
+};
+
+export const updateProduct = (arg) => async (dispatch) => {
+  console.log("updateProduct called with:", arg);
+  dispatch(setLoading(true));
+  // Mock implementation here
+  dispatch(setLoading(false));
+};
+
+export const deleteProduct = (arg) => async (dispatch) => {
+  console.log("deleteProduct called with:", arg);
+  dispatch(setLoading(true));
+  // Mock implementation here
+  dispatch(setLoading(false));
+};
+
+const initialState = {
+  products: [],
+  selectedProduct: null,
+  categoryProducts: {},
+  searchResults: [],
+  loading: false,
+  error: null,
+};
 
 const productSlice = createSlice({
-  name: "products",
-  initialState: {
-    items: [], // list of all products
-    singleProduct: null,
-    loading: false,
-    error: null,
-  },
+  name: 'products',
+  initialState,
   reducers: {
-    // If you have synchronous product-related actions, define them here.
+    clearSelectedProduct: (state) => {
+      state.selectedProduct = null;
+    },
+    clearSearchResults: (state) => {
+      state.searchResults = [];
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
   },
-  extraReducers: (builder) => {
-    builder
-      // fetchAllProducts
-      .addCase(fetchAllProducts.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchAllProducts.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = action.payload; // store the array of products
-      })
-      .addCase(fetchAllProducts.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+  extraReducers: {},
 
-      // fetchProductById
-      .addCase(fetchProductById.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-        state.singleProduct = null; // clear old data if you want
-      })
-      .addCase(fetchProductById.fulfilled, (state, action) => {
-        state.loading = false;
-        state.singleProduct = action.payload;
-      })
-      .addCase(fetchProductById.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
-
-    // similarly handle createNewProduct, etc.
-  },
 });
 
-export default productSlice.reducer;
+export const { clearSelectedProduct, clearSearchResults, clearError } = productSlice.actions;
+
+export const {
+  setFilters,
+  clearFilters,
+  resetProductState
+} = productSlice.actions;
+
+// Aliases for backward compatibility
+export const getProductById = fetchProductById;
+export const getProductsByCategory = fetchProductsByCategory;
+
+export default productSlice.reducer; 

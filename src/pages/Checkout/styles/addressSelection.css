@@ -1,0 +1,169 @@
+.address-selection {
+  margin-bottom: 20px;
+}
+
+.address-loading,
+.address-error {
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+.address-loading {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+}
+
+.address-error {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.no-addresses {
+  text-align: center;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.address-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.address-card {
+  display: flex;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.address-card:hover {
+  border-color: #aaa;
+  background-color: #f9f9f9;
+}
+
+.address-card.selected {
+  border-color: #4caf50;
+  background-color: #e8f5e9;
+}
+
+.address-selection-indicator {
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.address-details {
+  flex: 1;
+}
+
+.address-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.address-line {
+  margin-bottom: 3px;
+  color: #555;
+}
+
+.address-phone {
+  color: #777;
+  margin-top: 5px;
+}
+
+.add-address-btn {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  display: block;
+  margin: 10px 0;
+  transition: background-color 0.2s;
+}
+
+.add-address-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.address-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.address-form-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.address-form-container h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+.address-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.cancel-btn,
+.save-btn {
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.cancel-btn {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.save-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.save-btn:hover {
+  background-color: #388e3c;
+}
+
+@media (max-width: 768px) {
+  .address-card {
+    flex-direction: column;
+  }
+  
+  .address-selection-indicator {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+} 

@@ -13,16 +13,10 @@ const UserProfileForm = ({ initialValues = {}, onSubmit }) => {
   const [email, setEmail] = useState(initialValues.email || "");
   const [gender, setGender] = useState(initialValues.gender || "");
 
-  useEffect(() => {
-    // If the parent updates initialValues, sync them
-    setFirstName(initialValues.firstName || "");
-    setLastName(initialValues.lastName || "");
-    setUsername(initialValues.username || "");
-    setEmail(initialValues.email || "");
-    setGender(initialValues.gender || "");
-  }, [initialValues]);
+  // useEffect removed
 
-  const handleSubmit = (e) => {
+  const handleSubmit = $3 => {
+    console.log("Submit handler called with:", arguments[0]);
     e.preventDefault();
     const profileData = {
       firstName,

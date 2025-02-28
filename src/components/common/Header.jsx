@@ -1,32 +1,36 @@
 // src/components/Header.jsx
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+// Redux imports removed
 import { fetchAllProducts } from "../../redux/slices/productSlice";
+import "./styles/header.css";
 
 // 1) Import the logout action
 import { logout } from "../../redux/slices/userSlice";
 
 const Header = () => {
-  const dispatch = useDispatch();
+  // // const dispatch = useDispatch(); - removed - removed
 
   // We fetch all products to get categories (if your code does that).
-  useEffect(() => {
-    dispatch(fetchAllProducts());
-  }, [dispatch]);
+  // useEffect removed
 
   const cartQuantity = useSelector((state) => state.cart.totalQuantity);
-  const { userInfo } = useSelector((state) => state.user);
+  // useSelector hook removed - using placeholder values
 
   // Get product items from store for categories
   const products = useSelector((state) => state.products.items);
-  const categories = [...new Set(products.map((p) => p.category))];
+  // Ensure products is an array before mapping
+  const categories = products && Array.isArray(products) ? [...new Set(products.map((p) => p.category))] : [];
 
   // 2) Handle logout
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = $3 => {
+    console.log("Logout handler called with:", arguments[0]);
+    console.log("Would dispatch action:", "logout");
     // Optionally redirect or do anything else you want on logout
   };
+
+  // Mock user info for UI
+  const userInfo = null; // Set to an object with user data to simulate logged in state
 
   return (
     <header>

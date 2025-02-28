@@ -1,0 +1,95 @@
+.address-list {
+  margin-top: 15px;
+}
+
+.no-addresses {
+  color: #777;
+  font-style: italic;
+}
+
+.address-card {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+  transition: box-shadow 0.3s;
+}
+
+.address-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.address-details {
+  margin-bottom: 10px;
+}
+
+.address-text {
+  margin: 0;
+  line-height: 1.5;
+  color: #333;
+}
+
+.address-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-button, 
+.delete-button,
+.cancel-button {
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border: none;
+}
+
+.edit-button {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #3a80d2;
+}
+
+.delete-button {
+  background-color: #d9534f;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c9302c;
+}
+
+.delete-button:disabled {
+  background-color: #e9a8a6;
+  cursor: not-allowed;
+}
+
+.cancel-button {
+  background-color: #777;
+  color: white;
+  margin-top: 10px;
+}
+
+.cancel-button:hover {
+  background-color: #666;
+}
+
+.cancel-button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.edit-address-form {
+  margin-top: 10px;
+}
+
+.edit-address-form h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #444;
+} 

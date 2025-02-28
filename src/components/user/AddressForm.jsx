@@ -15,7 +15,8 @@ const AddressForm = ({ onSubmit, initialValues = {} }) => {
   const [zipcode, setZipcode] = useState(initialValues.zipcode || "");
   const [country, setCountry] = useState(initialValues.country || "");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = $3 => {
+    console.log("Submit handler called with:", arguments[0]);
     e.preventDefault();
     // Collect the form data
     const addressData = {

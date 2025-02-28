@@ -1,118 +1,61 @@
-// src/redux/slices/orderSlice.js
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  getOrdersByUser as getOrdersByUserService,
-  createOrder as createOrderService,
-  getAllOrders as getAllOrdersService, // <-- Add this import if you have getAllOrders in orderService.js
-} from "../../services/orderService";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { axiosClient } from '../../api';
 
-/**
- * Thunk: getOrdersByUser
- */
-export const getOrdersByUser = createAsyncThunk(
-  "orders/getOrdersByUser",
-  async (userId, { rejectWithValue }) => {
-    try {
-      const data = await getOrdersByUserService(userId);
-      return data; // array of orders for that user
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
+// Async thunks
+export const createOrder = (arg) => async (dispatch) => {
+  console.log("createOrder called with:", arg);
+  dispatch(setLoading(true));
+  // Mock implementation here
+  dispatch(setLoading(false));
+};
 
-/**
- * Thunk: createOrder
- */
-export const createOrder = createAsyncThunk(
-  "orders/createOrder",
-  async (orderData, { rejectWithValue }) => {
-    try {
-      const result = await createOrderService(orderData);
-      return result; // newly created order object
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
+export const fetchUserOrders = (arg) => async (dispatch) => {
+  console.log("fetchUserOrders called with:", arg);
+  dispatch(setLoading(true));
+  // Mock implementation here
+  dispatch(setLoading(false));
+};
 
-/**
- * Thunk: getAllOrders
- * For admin usage to fetch ALL orders from the backend (GET /orders).
- */
-export const getAllOrders = createAsyncThunk(
-  "orders/getAllOrders",
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await getAllOrdersService();
-      return data; // array of all orders
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
+export const getAllOrders = (arg) => async (dispatch) => {
+  console.log("getAllOrders called with:", arg);
+  dispatch(setLoading(true));
+  // Mock implementation here
+  dispatch(setLoading(false));
+};
+
+export const fetchOrderById = (arg) => async (dispatch) => {
+  console.log("fetchOrderById called with:", arg);
+  dispatch(setLoading(true));
+  // Mock implementation here
+  dispatch(setLoading(false));
+};
+
+// Create an alias for fetchOrderById for backward compatibility
+export const getOrderById = fetchOrderById;
 
 const orderSlice = createSlice({
-  name: "orders",
+  name: 'orders',
   initialState: {
-    // For user-specific orders
-    userOrders: [],
-
-    // Store the newly created order if desired
-    lastCreatedOrder: null,
-
-    // For admin usage, if you want to store all orders
-    allOrders: [],
-
+    orders: [],
+    currentOrder: null,
     loading: false,
     error: null,
+    success: false,
   },
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      // ========== getOrdersByUser ==========
-      .addCase(getOrdersByUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(getOrdersByUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.userOrders = action.payload;
-      })
-      .addCase(getOrdersByUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
-      // ========== createOrder ==========
-      .addCase(createOrder.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(createOrder.fulfilled, (state, action) => {
-        state.loading = false;
-        state.lastCreatedOrder = action.payload;
-      })
-      .addCase(createOrder.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
-      // ========== getAllOrders (ADMIN) ==========
-      .addCase(getAllOrders.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(getAllOrders.fulfilled, (state, action) => {
-        state.loading = false;
-        // Store the array of all orders in state
-        state.allOrders = action.payload;
-      })
-      .addCase(getAllOrders.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
+  reducers: {
+    clearCurrentOrder: (state) => {
+      state.currentOrder = null;
+    },
+    resetSuccess: (state) => {
+      state.success = false;
+    },
+    clearErrors: (state) => {
+      state.error = null;
+    },
   },
+  extraReducers: {},
+
 });
 
-export default orderSlice.reducer;
+export const { clearCurrentOrder, resetSuccess, clearErrors } = orderSlice.actions;
+export default orderSlice.reducer; 

@@ -1,171 +1,140 @@
-// src/redux/slices/userSlice.js
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  loginUser as loginUserService,
-  registerUser as registerUserService,
-  updateUser as updateUserService,
-  getAllUsers as getAllUsersService,
-} from "../../services/userService";
-import api from "../../services/api"; // Your axios instance for setting headers, etc.
+import { createSlice } from '@reduxjs/toolkit';
 
-// ========== loginUser Thunk ==========
-export const loginUser = createAsyncThunk(
-  "user/loginUser",
-  async (credentials, { rejectWithValue }) => {
-    try {
-      // Suppose the response is { token, user: {...} }
-      const data = await loginUserService(credentials);
-      return data;
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
+// Initial state with minimal required fields
+const initialState = {
+  currentUser: null,
+  users: [],
+  loading: false,
+  error: null,
+  isAuthenticated: false,
+};
 
-// ========== registerUser Thunk ==========
-// Accepts FormData now, but logic remains the same.
-export const registerUser = createAsyncThunk(
-  "user/registerUser",
-  async (userData, { rejectWithValue }) => {
-    try {
-      // userData is now a FormData object.
-      const data = await registerUserService(userData);
-      return data;
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
-
-// ========== updateUser Thunk ==========
-export const updateUser = createAsyncThunk(
-  "user/updateUser",
-  async ({ id, ...updateData }, { rejectWithValue }) => {
-    try {
-      const response = await updateUserService(id, updateData);
-      return response;
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
-
-// ========== fetchAllUsers Thunk ==========
-export const fetchAllUsers = createAsyncThunk(
-  "user/fetchAllUsers",
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await getAllUsersService();
-      return data;
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
-
+// Simple slice with basic structure
 const userSlice = createSlice({
-  name: "user",
-  initialState: {
-    userInfo: null,
-    token: null,
-    allUsers: [],
-    loading: false,
-    error: null,
-  },
+  name: 'user',
+  initialState,
   reducers: {
-    logout(state) {
-      state.userInfo = null;
-      state.token = null;
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+    // Basic user actions
+    setUser: (state, action) => {
+      state.currentUser = action.payload;
+      state.isAuthenticated = true;
+      state.loading = false;
+      state.error = null;
     },
-    /**
-     * setUserFromStorage: used when rehydrating user from localStorage
-     */
-    setUserFromStorage(state, action) {
-      const { token, user } = action.payload;
-      state.token = token;
-      state.userInfo = user;
+    
+    setUsers: (state, action) => {
+      state.users = action.payload;
+      state.loading = false;
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      // ===== loginUser =====
-      .addCase(loginUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.loading = false;
-        // Expecting action.payload => { token, user }
-        const { token, user } = action.payload;
-        state.token = token;
-        state.userInfo = user;
-
-        // Store in localStorage
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
-
-        // Optionally set default Auth header so subsequent requests are authenticated
-        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
-      // ===== registerUser =====
-      .addCase(registerUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(registerUser.fulfilled, (state, action) => {
-        state.loading = false;
-        // Suppose register also returns { token, user }, or at least a user
-        const { token, user } = action.payload;
-        state.token = token || null;
-        state.userInfo = user;
-
-        if (token) {
-          localStorage.setItem("token", token);
-          localStorage.setItem("user", JSON.stringify(user));
-          api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        }
-      })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
-      // ===== updateUser =====
-      .addCase(updateUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.userInfo = action.payload.user;
-      })
-      .addCase(updateUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
-      // ===== fetchAllUsers =====
-      .addCase(fetchAllUsers.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchAllUsers.fulfilled, (state, action) => {
-        state.loading = false;
-        state.allUsers = action.payload; // array of users
-      })
-      .addCase(fetchAllUsers.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
+    
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    
+    setError: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+    
+    clearError: (state) => {
+      state.error = null;
+    },
+    
+    logout: (state) => {
+      state.currentUser = null;
+      state.isAuthenticated = false;
+      state.error = null;
+    },
   },
 });
 
-export const { logout, setUserFromStorage } = userSlice.actions;
-export default userSlice.reducer;
+// Export actions
+export const { 
+  setUser, 
+  setUsers, 
+  setLoading, 
+  setError, 
+  clearError, 
+  logout 
+} = userSlice.actions;
+
+// Placeholder async functions that will be implemented later
+export const loginUser = (credentials) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    console.log('Login attempted with:', credentials);
+    // API call will go here
+    
+    // For now, simulate success with mock data
+    setTimeout(() => {
+      dispatch(setUser({ id: 1, name: 'User', email: credentials.email }));
+    }, 1000);
+  } catch (error) {
+    dispatch(setError('Login failed'));
+    console.error('Login error:', error);
+  }
+};
+
+export const registerUser = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    console.log('Registration attempted with:', userData);
+    // API call will go here
+    
+    dispatch(setLoading(false));
+  } catch (error) {
+    dispatch(setError('Registration failed'));
+    console.error('Registration error:', error);
+  }
+};
+
+export const getCurrentUser = () => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    console.log('Getting current user');
+    // API call will go here
+  } catch (error) {
+    dispatch(setError('Failed to fetch user'));
+    console.error('Get user error:', error);
+  }
+};
+
+export const updateUserProfile = (userData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    console.log('Updating profile with:', userData);
+    // API call will go here
+  } catch (error) {
+    dispatch(setError('Failed to update profile'));
+    console.error('Update profile error:', error);
+  }
+};
+
+export const updateUserPassword = (passwordData) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    console.log('Updating password:', passwordData);
+    // API call will go here
+  } catch (error) {
+    dispatch(setError('Failed to update password'));
+    console.error('Update password error:', error);
+  }
+};
+
+export const fetchAllUsers = () => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+    console.log('Fetching all users');
+    // API call will go here
+    
+    // For now, return empty array
+    setTimeout(() => {
+      dispatch(setUsers([]));
+    }, 1000);
+  } catch (error) {
+    dispatch(setError('Failed to fetch users'));
+    console.error('Fetch users error:', error);
+  }
+};
+
+export default userSlice.reducer; 
