@@ -1,65 +1,203 @@
 /* footer.css */
 
-/* Container for the footer */
+footer {
+  background-color: var(--secondary-color);
+  color: var(--neutral-100);
+  padding: var(--spacing-2xl) 0;
+  margin-top: auto;
+}
+
 .footer-container {
-  background-color: #f8f9fa; /* Light grey background */
-  border-top: 1px solid #e0e0e0; /* Subtle top border */
-  padding: 1.5rem; /* Spacing inside the footer */
-  text-align: center; /* Center the content */
-  font-family: var(
-    --font-family
-  ); /* Use the global font family if defined in base.css */
-  color: var(
-    --secondary-color
-  ); /* Use your brand’s secondary color if available */
+  width: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
 }
 
-/* Footer text */
-.footer-container p {
-  margin-bottom: 0.5rem;
-  font-size: 0.95rem;
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-2xl);
 }
 
-/* Footer links container */
+/* Footer sections */
+.footer-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-section h3 {
+  color: white;
+  font-size: 1.25rem;
+  margin-bottom: var(--spacing-lg);
+  font-weight: 600;
+  position: relative;
+}
+
+.footer-section h3::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 2.5rem;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+/* Footer links */
 .footer-links {
-  display: inline-flex; /* Align links horizontally */
-  gap: 1.5rem; /* Space between links */
-  list-style: none; /* Remove bullet points */
-  margin: 0;
+  list-style: none;
   padding: 0;
-  justify-content: center;
-}
-
-/* Individual list items (links) */
-.footer-links li {
   margin: 0;
 }
 
-/* Footer link styling */
+.footer-links li {
+  margin-bottom: var(--spacing-md);
+}
+
 .footer-links a {
-  color: var(--secondary-color); /* Or a different color if you prefer */
+  color: var(--neutral-300);
   text-decoration: none;
+  transition: color var(--transition-fast);
   font-size: 0.95rem;
-  transition: color 0.2s ease;
+  display: inline-block;
 }
 
-/* Hover effect for links */
 .footer-links a:hover {
-  color: var(--primary-color); /* Use your brand’s primary color */
+  color: white;
 }
 
-/* Responsive footer example */
-@media (max-width: 768px) {
-  .footer-container {
-    padding: 1rem;
-  }
+/* Company info */
+.company-info p {
+  color: var(--neutral-400);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: var(--spacing-md);
+}
 
-  .footer-links {
-    gap: 1rem;
-    flex-wrap: wrap; /* Allow links to wrap on smaller screens */
-  }
+/* Social media */
+.social-links {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+}
 
-  .footer-links a {
-    font-size: 0.9rem;
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--border-radius-full);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: all var(--transition-fast);
+}
+
+.social-link:hover {
+  background-color: var(--primary-color);
+  transform: translateY(-3px);
+}
+
+/* Newsletter */
+.newsletter-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.newsletter-form p {
+  color: var(--neutral-300);
+  font-size: 0.95rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.newsletter-input-group {
+  display: flex;
+  width: 100%;
+}
+
+.newsletter-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: var(--border-radius-md) 0 0 var(--border-radius-md);
+  font-size: 0.95rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.newsletter-input:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.newsletter-input::placeholder {
+  color: var(--neutral-400);
+}
+
+.newsletter-button {
+  padding: 0.75rem 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.newsletter-button:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Bottom footer */
+.footer-bottom {
+  margin-top: var(--spacing-2xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.copyright {
+  color: var(--neutral-400);
+  font-size: 0.875rem;
+}
+
+.footer-bottom-links {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.footer-bottom-links a {
+  color: var(--neutral-300);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.footer-bottom-links a:hover {
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .footer-content {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
+
+@media (max-width: 640px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    text-align: center;
+  }
+}
+

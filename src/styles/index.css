@@ -1,29 +1,26 @@
-/* index.css */
+/* index.css - Main entry point for styles */
 
+/* Base styles - Core styles, variables, resets */
 @import url("./base.css");
+
+/* Component styles - Reusable UI components */
 @import url("./components/header.css");
 @import url("./components/footer.css");
+@import url("./components/ProductCard.css");
+@import url("./components/ProductList.css");
+
+/* Page styles - Specific page layouts */
 @import url("./pages/HomePage.css");
-@import url("./components//ProductCard.css");
-@import url("./components//ProductList.css");
 @import url("./pages/ProductDetailsPage.css");
-@import url("./pages/LoginPage.css");
-@import url("./pages/CartPage.css");
 @import url("./pages/ProductListingPage.css");
+@import url("./pages/LoginPage.css");
 @import url("./pages/RegisterPage.css");
-@import url("./pages/UserOrdersPage.css");
+@import url("./pages/CartPage.css");
+@import url("./pages/CheckoutPage.css");
 @import url("./pages/UserAccountPage.css");
+@import url("./pages/UserOrdersPage.css");
 @import url("./pages/PaymentPage.css");
 @import url("./pages/OrderSuccessPage.css");
-@import url("./pages/CheckoutPage.css");
 @import url("./pages/AdminDashboardPage.css");
-@import url("./pages/PaymentPage.css");
 
-/* 
-   You can add more imports here, for example:
-   @import url('./components/footer.css');
-   @import url('./components/cards.css');
-   etc.
-*/
-
-/* index.css can also include global overrides or site-wide styles if needed */
+/* Optional: Add any additional global styles here if needed */
